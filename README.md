@@ -42,14 +42,15 @@ capitals    country_languages (country_id PK, language_id PK, is_primary, percen
 ## 📄 Consultas de ejemplo
 
 ```sql
--- Obtener todos los países y sus capitales
-SELECT c.name AS country, ca.name AS capital
-FROM countries c
-JOIN capitals ca ON c.country_id = ca.country_id;
+-- Países más grandes por área
+SELECT TOP 10 name, area_km2 
+FROM countries 
+ORDER BY area_km2 DESC;
 
--- Idiomas oficiales de Argentina
-SELECT l.name
-FROM languages l
-JOIN country_languages cl ON l.language_id = cl.language_id
-JOIN countries c ON c.country_id = cl.country_id
-WHERE c.name = 'Argentina' AND cl.is_primary = 1;
+-- Países que están en más de un continente
+SELECT c.name as country, COUNT(*) as continents_count
+FROM country_continents cc
+JOIN countries c ON cc.country_id = c.country_id
+GROUP BY c.name
+HAVING COUNT(*) > 1
+ORDER BY continents_count DESC;
